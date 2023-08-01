@@ -127,5 +127,5 @@ main(int argc, char **argv)
         cudaEventElapsedTime(&elapsed, start, stop);
         sum += elapsed;
     }
-    printf("%f seconds\n", (sum / rounds-1) / 1000.0f);
+    printf("%f seconds\n", (sum / (rounds-1)) / 1000.0f);
 }
