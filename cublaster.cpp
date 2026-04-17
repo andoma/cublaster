@@ -113,6 +113,7 @@ main(int argc, char **argv)
     cudaEventCreate(&stop);
     float sum = 0;
     float last_print = 0;
+    int last_print_iter = 0;
     for(int i = 0; i < rounds; i++) {
         cudaEventRecord(start, 0);
         if(half) {
@@ -127,12 +128,15 @@ main(int argc, char **argv)
         float elapsed;
         cudaEventElapsedTime(&elapsed, start, stop);
         sum += elapsed;
-        float avg_ms = sum / i;
         if(sum - last_print >= 1000.0f || i == rounds - 1) {
+            float interval_ms = sum - last_print;
+            int interval_iters = i - last_print_iter;
+            float avg_ms = interval_ms / interval_iters;
             fprintf(stderr, "\r%d/%d  %.1f iter/s  %.3f ms/iter",
                     i, rounds - 1, 1000.0f / avg_ms, avg_ms);
             fflush(stderr);
             last_print = sum;
+            last_print_iter = i;
         }
     }
     fprintf(stderr, "\n");
